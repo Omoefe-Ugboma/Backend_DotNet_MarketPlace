@@ -1,3 +1,4 @@
+C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\appsettings.json
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\Backend.staticwebassets.endpoints.json
@@ -107,7 +108,6 @@ C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
 C:\Users\HP\Desktop\Devfront\Intern\MultiTenantMarketplace\Backend\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
