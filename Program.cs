@@ -16,6 +16,10 @@ builder.Configuration
 // Add DbContext with SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+  
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Multi-Tenant
 builder.Services.AddMultiTenant<TenantInfo>()
@@ -44,6 +48,15 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Apply migrations & seed data
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+    DbSeeder.Seed(db);
+}
+
 
 app.UseCors("AllowFrontend");
 app.UseMultiTenant();
