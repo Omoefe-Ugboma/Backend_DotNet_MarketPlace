@@ -1,12 +1,28 @@
+using Backend.Models;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
-[Route("api/[controller]")]
-public class TenantController : ControllerBase
+namespace Backend.Controllers
 {
-    private readonly Backend.Data.ApplicationDbContext _context;
-    public TenantController(Backend.Data.ApplicationDbContext context) => _context = context;
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TenantController : ControllerBase
+    {
+        private readonly TenantService _tenantService;
 
-    [HttpGet]
-    public IActionResult GetTenants() => Ok(_context.Tenants.ToList());
+        public TenantController(TenantService tenantService)
+        {
+            _tenantService = tenantService;
+        }
+
+         [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] DTOs.RegisterTenantRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var tenant = await _tenantService.RegisterTenantAsync(request);
+            return Ok(tenant);
+        }
+    }
 }

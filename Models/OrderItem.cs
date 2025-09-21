@@ -1,13 +1,26 @@
-using Backend.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-// In Models/OrderItem.cs
-// In Models/OrderItem.cs
-public class OrderItem
+namespace Backend.Models
 {
-    public int Id { get; set; }
-    public int OrderId { get; set; }       // Foreign key
-    public Order Order { get; set; }       // Navigation property ← ADD THIS
-    public int ProductId { get; set; }     // Foreign key  
-    public Product Product { get; set; }   // Navigation property ← ADD THIS
-    public int Quantity { get; set; }
+    public class OrderItem : ITenantEntity
+    {
+        [Key]
+        public int Id { get; set; }
+        
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
+        
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
+        
+        public int Quantity { get; set; }
+        
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal UnitPrice { get; set; }
+        
+        // ADD THIS for Day 3
+        public int TenantId { get; set; }
+        public Tenant Tenant { get; set; }
+    }
 }
