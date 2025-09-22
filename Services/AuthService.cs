@@ -9,38 +9,45 @@ namespace Backend.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly TokenService _tokenService;
 
-        public AuthService(ApplicationDbContext context, IPasswordHasher<User> passwordHasher)
+        public AuthService(
+            ApplicationDbContext context,
+            IPasswordHasher<User> passwordHasher,
+            TokenService tokenService)
         {
             _context = context;
             _passwordHasher = passwordHasher;
+            _tokenService = tokenService;
         }
 
-        public async Task<User?> RegisterAdminAsync(string email, string password, int tenantId)
+        public async Task<string?> LoginAsync(string email, string password)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == email))
-                return null;
+            email = email.Trim().ToLower();
 
-            var user = new User
+            // Ignore tenant filters, find user across all tenants
+            var user = await _context.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
             {
-                Email = email,
-                TenantId = tenantId,
-                Role = "Admin"
-            };
-
-            user.PasswordHash = _passwordHasher.HashPassword(user, password);
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
-
-        public async Task<User?> ValidateUserAsync(string email, string password)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null) return null;
+                Console.WriteLine($"[LOGIN FAIL] User '{email}' not found in DB.");
+                return null;
+            }
 
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-            return result == PasswordVerificationResult.Success ? user : null;
+
+            if (result != PasswordVerificationResult.Success)
+            {
+                Console.WriteLine($"[LOGIN FAIL] Password mismatch for {email}");
+                return null;
+            }
+
+            Console.WriteLine($"[LOGIN OK] {user.Email}");
+
+            // Generate JWT token
+            return _tokenService.GenerateToken(user);
         }
     }
 }

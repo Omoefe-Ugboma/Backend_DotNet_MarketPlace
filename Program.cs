@@ -1,4 +1,5 @@
 using Backend.Data;
+using Backend.Models;
 using Backend.Services;
 using Finbuckle.MultiTenant;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,15 +30,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // -------------------------
 // Services
 // -------------------------
+builder.Services.AddSingleton<TokenService>();
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TenantService>();
 builder.Services.AddScoped<TokenService>();
+
 builder.Services.AddSingleton<IPasswordHasher<Backend.Models.User>, PasswordHasher<Backend.Models.User>>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<TenantService>();
+
+
+// ✅ Register IPasswordHasher correctly
+// builder.Services.AddScoped<IPasswordHasher<Backend.Models.User>, PasswordHasher<Backend.Models.User>>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // -------------------------
 // Multi-Tenancy
 // -------------------------
-builder.Services.AddMultiTenant<TenantInfo>()
+builder.Services.AddMultiTenant<Backend.Models.TenantInfo>()
     .WithInMemoryStore()
     .WithBasePathStrategy();
 
@@ -60,11 +71,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
 
-        // Optional: Attach TenantId from JWT to HttpContext
         options.Events = new JwtBearerEvents
         {
             OnTokenValidated = context =>
             {
+                // Optional: Attach TenantId from JWT to HttpContext
                 var tenantIdClaim = context.Principal?.FindFirst("TenantId");
                 if (tenantIdClaim != null && int.TryParse(tenantIdClaim.Value, out var tenantId))
                 {
@@ -137,7 +148,9 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
-    // DbSeeder.Seed(db); // optional, if you’ve implemented seeding
+
+    // Optional: Seed initial users if needed
+    // DbSeeder.Seed(db);
 }
 
 // -------------------------

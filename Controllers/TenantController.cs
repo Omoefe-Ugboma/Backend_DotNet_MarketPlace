@@ -1,4 +1,5 @@
-using Backend.Models;
+// Controllers/TenantController.cs
+using Backend.DTOs;
 using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +16,29 @@ namespace Backend.Controllers
             _tenantService = tenantService;
         }
 
-         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] DTOs.RegisterTenantRequest request)
+        [HttpPost("register")]
+        public async Task<ActionResult<TenantDto>> RegisterTenant([FromBody] TenantRegisterRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var tenant = await _tenantService.RegisterTenantAsync(request);
-            return Ok(tenant);
+
+            var dto = new TenantDto
+            {
+                Id = tenant.Id,
+                Name = tenant.Name,
+                Identifier = tenant.Identifier,
+                Host = tenant.Host,
+                Subdomain = tenant.Subdomain,
+                SubscriptionPlan = tenant.SubscriptionPlan,
+                Users = tenant.Users.Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Role = u.Role
+                }).ToList()
+            };
+
+            return Ok(dto);
         }
     }
 }
